@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grow-With-Me — Study Wellness Guardian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#2f4a3e;
+    --board-dark:#25392f;
+    --chalk:#f4f1e6;
+    --chalk-dim:#cdd6cb;
+    --yellow:#e8c468;
+    --coral:#e08a6a;
+    --blue-chalk:#8fb8c9;
+    --rule: rgba(244,241,230,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--board);
+    color:var(--chalk);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 3px 3px;
+    pointer-events:none;
+    z-index:0;
+  }
+  h1,h2,h3, .hand{
+    font-family:'Kalam', cursive;
+    font-weight:700;
+    letter-spacing:0.01em;
+  }
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+  }
+  a{ color:var(--yellow); }
+  .wrap{ max-width:920px; margin:0 auto; padding:0 28px; position:relative; z-index:1; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  nav .brand{ font-family:'Kalam',cursive; font-size:1.15rem; }
+  nav a.repo-link{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    color:var(--chalk-dim);
+    text-decoration:none;
+    border:1px solid var(--rule);
+    padding:8px 14px;
+    border-radius:3px;
+    transition:border-color .2s, color .2s;
+  }
+  nav a.repo-link:hover{ color:var(--yellow); border-color:var(--yellow); }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding:88px 0 70px;
+    text-align:left;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--coral);
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    margin-bottom:18px;
+  }
+  header.hero h1{
+    font-size:clamp(2.4rem, 5.6vw, 4rem);
+    line-height:1.08;
+    margin:0 0 22px;
+    max-width:14ch;
+  }
+  header.hero h1 .accent{ color:var(--yellow); }
+  header.hero p.lede{
+    font-size:1.1rem;
+    color:var(--chalk-dim);
+    max-width:52ch;
+    margin:0 0 34px;
+  }
+  .cta-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.85rem;
+    padding:12px 20px;
+    border-radius:3px;
+    text-decoration:none;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary{ background:var(--yellow); color:var(--board-dark); font-weight:500; }
+  .btn-primary:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(232,196,104,0.25); }
+  .btn-ghost{ border:1px solid var(--rule); color:var(--chalk); }
+  .btn-ghost:hover{ border-color:var(--chalk); }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{ padding:64px 0; border-top:1px solid var(--rule); }
+  section .kicker{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.75rem;
+    color:var(--blue-chalk);
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    margin-bottom:10px;
+  }
+  section h2{ font-size:1.9rem; margin:0 0 14px; }
+  section p.section-lede{ color:var(--chalk-dim); max-width:60ch; margin:0 0 40px; }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .signal-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+  }
+  .signal-card{
+    background:rgba(0,0,0,0.14);
+    border:1px solid var(--rule);
+    border-radius:6px;
+    padding:26px 24px;
+  }
+  .signal-card .glyph{ font-size:1.8rem; margin-bottom:12px; display:block; }
+  .signal-card h3{ font-size:1.15rem; margin:0 0 8px; color:var(--chalk); font-family:'Work Sans',sans-serif; font-weight:600; }
+  .signal-card p{ color:var(--chalk-dim); font-size:0.95rem; margin:0; }
+
+  /* ---------- GROWTH CHART (signature element) ---------- */
+  .chart-section{ padding-top:70px; }
+  .growth-wrap{
+    display:flex;
+    align-items:stretch;
+    gap:36px;
+    margin-top:20px;
+  }
+  .growth-rail{
+    flex:0 0 64px;
+    position:relative;
+  }
+  .growth-rail svg{ display:block; height:100%; width:100%; }
+  .growth-rows{ flex:1; display:flex; flex-direction:column; gap:0; }
+  .growth-row{
+    flex:1;
+    display:flex;
+    align-items:center;
+    padding:26px 0;
+    border-bottom:1px dashed var(--rule);
+  }
+  .growth-row:last-child{ border-bottom:none; }
+  .growth-row .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    padding:4px 10px;
+    border-radius:20px;
+    margin-right:18px;
+    white-space:nowrap;
+    flex:0 0 auto;
+  }
+  .tag-lower{ background:rgba(224,138,106,0.18); color:var(--coral); border:1px solid rgba(224,138,106,0.4); }
+  .tag-middle{ background:rgba(143,184,201,0.18); color:var(--blue-chalk); border:1px solid rgba(143,184,201,0.4); }
+  .tag-higher{ background:rgba(232,196,104,0.18); color:var(--yellow); border:1px solid rgba(232,196,104,0.4); }
+  .growth-row .content h3{
+    font-family:'Work Sans',sans-serif; font-weight:600; font-size:1.02rem; margin:0 0 6px; color:var(--chalk);
+  }
+  .growth-row .content p{ margin:0; color:var(--chalk-dim); font-size:0.92rem; }
+  .growth-row .content .stats{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.76rem;
+    color:var(--chalk-dim);
+    margin-top:8px;
+    display:flex; gap:18px; flex-wrap:wrap;
+  }
+
+  /* ---------- TECH STACK ---------- */
+  .stack-list{
+    display:flex; flex-wrap:wrap; gap:10px;
+  }
+  .stack-pill{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    padding:8px 14px;
+    border:1px solid var(--rule);
+    border-radius:20px;
+    color:var(--chalk-dim);
+  }
+
+  /* ---------- SETUP ---------- */
+  .code-block{
+    background:var(--board-dark);
+    border:1px solid var(--rule);
+    border-radius:6px;
+    padding:20px 22px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.85rem;
+    color:var(--chalk-dim);
+    overflow-x:auto;
+    white-space:pre;
+    margin:0 0 16px;
+  }
+  .code-block .comment{ color: #6f8a7c; }
+  .code-block .cmd{ color:var(--yellow); }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding:40px 0 60px;
+    border-top:1px solid var(--rule);
+    color:var(--chalk-dim);
+    font-size:0.85rem;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+
+  @media (max-width:680px){
+    .signal-grid{ grid-template-columns:1fr; }
+    .growth-wrap{ gap:16px; }
+    .growth-rail{ flex-basis:36px; }
+    header.hero{ padding:56px 0 44px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .btn{ transition:none; }
+  }
+
+  :focus-visible{
+    outline:2px solid var(--yellow);
+    outline-offset:2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="brand">🌱 grow-with-me</div>
+    <a class="repo-link" href="#" id="repoLink">View on GitHub ↗</a>
+  </nav>
+
+  <header class="hero">
+    <div class="eyebrow">School AI Project — Computer Vision</div>
+    <h1>One camera watches.<br>Three different <span class="accent">coaches</span> respond.</h1>
+    <p class="lede">
+      A webcam-based wellness guardian that tracks posture and eye strain during study
+      sessions — then coaches a 7-year-old, a 12-year-old, and a 17-year-old completely
+      differently, because a single fixed rule was never going to fit all of them.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#growth">See the age profiles</a>
+      <a class="btn btn-ghost" href="#setup">Run it locally</a>
+    </div>
+  </header>
+
+  <section id="how">
+    <div class="kicker">How it reads you</div>
+    <h2>Two signals, watched every frame</h2>
+    <p class="section-lede">
+      No video is ever recorded or uploaded. Everything below happens locally, frame by
+      frame, in memory.
+    </p>
+    <div class="signal-grid">
+      <div class="signal-card">
+        <span class="glyph">🦴</span>
+        <h3>Spine angle</h3>
+        <p>
+          MediaPipe Pose locates the shoulder and ear. The angle between that line and
+          vertical is the slouch signal — the more you lean in, the wider it opens.
+        </p>
+      </div>
+      <div class="signal-card">
+        <span class="glyph">👁</span>
+        <h3>Blink rate</h3>
+        <p>
+          MediaPipe Face Mesh + Eye Aspect Ratio catches each blink. A healthy rate sits
+          near 15–20/min — screen-staring quietly drags it down to 5–7.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="growth" class="chart-section">
+    <div class="kicker">The signature idea</div>
+    <h2>A growth chart, not a rulebook</h2>
+    <p class="section-lede">
+      Like the height marks on a classroom wall, but instead of centimeters, each mark
+      is a different tolerance, a different voice.
+    </p>
+
+    <div class="growth-wrap">
+      <div class="growth-rail" aria-hidden="true">
+        <svg viewBox="0 0 64 420" preserveAspectRatio="none">
+          <line x1="32" y1="10" x2="32" y2="410" stroke="var(--rule)" stroke-width="2"/>
+          <circle cx="32" cy="70" r="5" fill="var(--coral)"/>
+          <circle cx="32" cy="210" r="5" fill="var(--blue-chalk)"/>
+          <circle cx="32" cy="350" r="5" fill="var(--yellow)"/>
+        </svg>
+      </div>
+      <div class="growth-rows">
+        <div class="growth-row">
+          <span class="tag tag-lower">5–9 yrs</span>
+          <div class="content">
+            <h3>"Buddy the Bear says sit up tall! 🦸"</h3>
+            <p>Short attention span, shortest tolerance — the earliest nudge, the most playful voice.</p>
+            <div class="stats">
+              <span>slouch limit: 20s</span>
+              <span>blink floor: 12/min</span>
+            </div>
+          </div>
+        </div>
+        <div class="growth-row">
+          <span class="tag tag-middle">10–14 yrs</span>
+          <div class="content">
+            <h3>"Small habits add up — straighten up."</h3>
+            <p>Framed as habit-building rather than a scolding — this age responds to streaks, not stories.</p>
+            <div class="stats">
+              <span>slouch limit: 40s</span>
+              <span>blink floor: 10/min</span>
+            </div>
+          </div>
+        </div>
+        <div class="growth-row">
+          <span class="tag tag-higher">15–18 yrs</span>
+          <div class="content">
+            <h3>"Blink rate has dropped below healthy range."</h3>
+            <p>Longest tolerance, plain data — treated like a self-improvement dashboard, not a nag.</p>
+            <div class="stats">
+              <span>slouch limit: 60s</span>
+              <span>blink floor: 8/min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stack">
+    <div class="kicker">Built with</div>
+    <h2>Tech stack</h2>
+    <div class="stack-list">
+      <span class="stack-pill">Python 3</span>
+      <span class="stack-pill">OpenCV</span>
+      <span class="stack-pill">MediaPipe Pose</span>
+      <span class="stack-pill">MediaPipe Face Mesh</span>
+      <span class="stack-pill">Eye Aspect Ratio (EAR)</span>
+    </div>
+  </section>
+
+  <section id="setup">
+    <div class="kicker">Try it</div>
+    <h2>Run it locally</h2>
+    <p class="section-lede">Needs a webcam. Won't run in a browser or cloud sandbox — this is a desktop app.</p>
+    <div class="code-block"><span class="comment"># install dependencies</span>
+<span class="cmd">pip install -r requirements.txt</span>
+
+<span class="comment"># set the age profile inside main.py, then run</span>
+<span class="cmd">python main.py</span>
+
+<span class="comment"># press 'q' during the session to stop and see the summary</span></div>
+  </section>
+
+  <footer>
+    <span>Grow-With-Me Study Wellness Guardian — school AI project</span>
+    <span class="mono">posture + eye-strain + age-adaptive coaching</span>
+  </footer>
+</div>
+
+</body>
+</html>
